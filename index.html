@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍇 우리 가족 칭찬 포도 보드 (+AI 요약)</title>
+    <title>🍇 비즈옵스 칭찬 포도 보드 (+AI 요약)</title>
     <style>
         /* --- 기본 스타일 --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -222,36 +222,16 @@
         
         .grape-confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; overflow: hidden; border-radius: 15px; }
         .grape-confetti { position: absolute; pointer-events: none; }
-        @keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-        @keyframes slideInDown { from { transform: translateX(-50%) translateY(-100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
-        
-        @media (max-width: 768px) { .header h1 { font-size: 2em; } .members-container { grid-template-columns: 1fr; } .grape { width: 35px; height: 35px; } }
-        
-        .backup-controls { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; gap: 10px; }
-        .btn-mini { background: rgba(255, 255, 255, 0.8); border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; cursor: pointer; backdrop-filter: blur(5px); }
-        .btn-mini:hover { background: white; }
     </style>
-    
-    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-        <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#fcd34d;stop-opacity:1" />
-            <stop offset="50%" style="stop-color:#fbbf24;stop-opacity:1" />
-            <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
-        </linearGradient>
-    </svg>
 </head>
 <body>
     <div class="header">
-        <h1>🍇 우리 가족 칭찬 포도</h1>
-        <p>우리 가족의 좋은 일을 칭찬하고 포도를 채워보세요!</p>
-        <p style="font-size: 0.9em; color: #9333ea; margin-top: 5px;">
-            💡 팁: 빈 포도알을 클릭하여 칭찬을 추가하세요! (실시간 자동 저장) ⚡
-        </p>
+        <h1>🍇 비즈옵스 칭찬 포도</h1>
+        <p>우리 팀원의 좋은 일을 칭찬하고 포도를 채워보세요!</p>
     </div>
 
     <div class="controls">
-        <button class="btn-add-member" onclick="handleAddMember()"><span style="color: white;">➕</span> 가족 추가</button>
+        <button class="btn-add-member" onclick="handleAddMember()">➕ 팀원 추가</button>
     </div>
 
     <div class="members-container" id="membersContainer">
@@ -288,39 +268,21 @@
         </div>
     </div>
 
-    <div class="modal" id="historyModal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">📜 명예의 전당</div>
-            <div class="modal-text" style="text-align: left; margin-bottom: 10px; font-size: 0.95em;">
-                이전에 완성한 포도송이들의 기록입니다.
-            </div>
-            <div class="history-list" id="historyList">
-                </div>
-            <div class="modal-buttons" style="margin-top: 20px;">
-                <button class="modal-btn modal-btn-cancel" onclick="document.getElementById('historyModal').classList.remove('active')">닫기</button>
-            </div>
-        </div>
-    </div>
-
     <div class="confetti-container" id="confettiContainer"></div>
-    
-    <input type="file" id="jsonUpload" accept=".json" style="display:none" onchange="restoreData(this)">
-    <div class="backup-controls">
-        <button class="btn-mini" onclick="document.getElementById('jsonUpload').click()">📂 데이터 복원 (JSON)</button>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
+        // Firebase 설정 (기존 정보 유지)
         const firebaseConfig = {
-          apiKey: "AIzaSyAHAl4ZKNB4Jfwz25pP8ydjWEWHhsjTq8c",
-          authDomain: "grape-board-home.firebaseapp.com",
-          projectId: "grape-board-home",
-          storageBucket: "grape-board-home.firebasestorage.app",
-          messagingSenderId: "396317611658",
-          appId: "1:396317611658:web:15ab3bbf071bb6de2fff73",
-          measurementId: "G-MQ8BRLPGB2"
+          apiKey: "AIzaSyAuaHkcxL6Zr8xmkTpwFW5dGJtnJ8525Gs",
+          authDomain: "grape-board-7065e.firebaseapp.com",
+          projectId: "grape-board-7065e",
+          storageBucket: "grape-board-7065e.firebasestorage.app",
+          messagingSenderId: "658561934916",
+          appId: "1:658561934916:web:3f81caca7f24cd3ffe3e11",
+          measurementId: "G-590B327N90"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -328,94 +290,51 @@
         const membersCollection = collection(db, "members");
 
         window.db = db;
-        
         const GRAPE_PATTERN = [6, 5, 5, 4, 4, 3, 2, 1];
         const TOTAL_GRAPES = 30;
-        const DELETE_PASSWORD = "우리가족짱"; 
+        const DELETE_PASSWORD = "비즈옵스짱"; 
         
         let members = [];
         let currentGrapeData = null;
         let deleteGrapeData = null;
 
         const q = query(membersCollection, orderBy("createdAt"));
-        
         onSnapshot(q, (snapshot) => {
-            members = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            
-            console.log("Firebase에서 데이터 동기화 완료:", members.length);
+            members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderMembers();
-        }, (error) => {
-            console.error("데이터 불러오기 실패:", error);
         });
 
+        // 멤버 추가 기능
         window.handleAddMember = async function() {
             const newMember = {
-                name: `가족 ${members.length + 1}`,
+                name: `팀원 ${members.length + 1}`,
                 photo: null,
                 grapes: Array(TOTAL_GRAPES).fill(null),
                 completionCount: 0,
                 history: [], 
                 createdAt: Date.now()
             };
-            
-            try {
-                await addDoc(membersCollection, newMember);
-            } catch (e) {
-                alert("멤버 추가 실패: " + e.message);
-            }
+            try { await addDoc(membersCollection, newMember); } catch (e) { alert("멤버 추가 실패: " + e.message); }
         };
 
+        // 멤버 삭제 기능
         window.removeMember = async function(id) {
-            const password = prompt("멤버를 삭제하려면 비밀번호를 입력하세요:");
-            if (password !== DELETE_PASSWORD) {
-                alert("비밀번호가 일치하지 않습니다.");
-                return;
-            }
-
-            if (confirm('정말 이 멤버를 삭제하시겠습니까?')) {
-                try {
-                    await deleteDoc(doc(db, "members", id));
-                } catch (e) {
-                    alert("삭제 실패: " + e.message);
-                }
+            const password = prompt("팀원을 삭제하려면 비밀번호를 입력하세요:");
+            if (password !== DELETE_PASSWORD) { alert("비밀번호가 일치하지 않습니다."); return; }
+            if (confirm('정말 이 팀원을 삭제하시겠습니까?')) {
+                try { await deleteDoc(doc(db, "members", id)); } catch (e) { alert("삭제 실패: " + e.message); }
             }
         };
 
+        // 이름 업데이트
         window.updateMemberName = async function(id, newName) {
-            try {
-                await updateDoc(doc(db, "members", id), { name: newName });
-            } catch (e) {
-                console.error("이름 업데이트 실패", e);
-            }
+            try { await updateDoc(doc(db, "members", id), { name: newName }); } catch (e) { console.error("이름 업데이트 실패", e); }
         };
 
-        window.uploadPhoto = function(id, event) {
-            const file = event.target.files[0];
-            if (file) {
-                if (file.size > 1024 * 1024) {
-                    alert("이미지 크기가 너무 큽니다. 1MB 이하의 이미지를 사용해주세요.");
-                    return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    try {
-                        await updateDoc(doc(db, "members", id), { photo: e.target.result });
-                    } catch (err) {
-                        alert("이미지 저장 실패: 용량이 너무 클 수 있습니다.");
-                    }
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-
+        // 포도알 클릭 시 처리
         window.clickGrape = function(memberId, grapeIndex) {
             const member = members.find(m => m.id === memberId);
             if (!member) return;
-
             const grape = member.grapes[grapeIndex];
             const isFilled = grape !== null && typeof grape === 'object' && grape.reason && grape.reason.trim() !== '';
 
@@ -432,297 +351,105 @@
             }
         };
 
+        // 칭찬 저장 기능
         window.savePraise = async function() {
             const reason = document.getElementById('praiseInput').value.trim();
-            if (!reason) {
-                alert('칭찬 사유를 입력해주세요!');
-                return;
-            }
-            if (!currentGrapeData) return;
-
+            if (!reason || !currentGrapeData) return;
             const { memberId, grapeIndex } = currentGrapeData;
             const member = members.find(m => m.id === memberId);
-            
             if (member) {
                 const now = new Date();
                 const newGrape = {
                     reason: reason,
                     timestamp: now.getTime(),
-                    dateString: now.toLocaleString('ko-KR', {
-                        year: 'numeric', month: '2-digit', day: '2-digit',
-                        hour: '2-digit', minute: '2-digit'
-                    })
+                    dateString: now.toLocaleString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
                 };
-
                 const newGrapes = [...member.grapes];
                 newGrapes[grapeIndex] = newGrape;
-
                 closePraiseModal();
-
-                try {
-                    await updateDoc(doc(db, "members", memberId), { grapes: newGrapes });
-                    
-                    showSaveNotification('저장되었습니다');
-                    setTimeout(() => createQuickConfetti(memberId), 100);
-                    const grapeElement = document.querySelector(`[data-member-id="${memberId}"][data-grape-index="${grapeIndex}"]`);
-                    if (grapeElement) {
-                        grapeElement.classList.add('sparkle');
-                        setTimeout(() => grapeElement.classList.remove('sparkle'), 600);
-                    }
-
-                    const filledCount = newGrapes.filter(g => g !== null && g.reason).length;
-                    if (filledCount === TOTAL_GRAPES) {
-                        currentGrapeData = { memberId }; 
-                        showCelebration(member);
-                    }
-                } catch (e) {
-                    alert("저장 실패: " + e.message);
-                }
+                try { await updateDoc(doc(db, "members", memberId), { grapes: newGrapes }); } catch (e) { alert("저장 실패: " + e.message); }
             }
         };
 
+        // 칭찬 삭제 처리
         window.confirmDelete = async function() {
             if (!deleteGrapeData) return;
-
             const password = prompt("칭찬을 삭제하려면 비밀번호를 입력하세요:");
-            if (password !== DELETE_PASSWORD) {
-                alert("비밀번호가 일치하지 않습니다.");
-                return;
-            }
-
+            if (password !== DELETE_PASSWORD) { alert("비밀번호가 일치하지 않습니다."); return; }
             const { memberId, grapeIndex } = deleteGrapeData;
             const member = members.find(m => m.id === memberId);
-            
             if (member) {
                 const newGrapes = [...member.grapes];
                 newGrapes[grapeIndex] = null;
-                
                 closeDeleteModal();
-                try {
-                    await updateDoc(doc(db, "members", memberId), { grapes: newGrapes });
-                } catch (e) {
-                    alert("삭제 실패: " + e.message);
-                }
+                try { await updateDoc(doc(db, "members", memberId), { grapes: newGrapes }); } catch (e) { alert("삭제 실패: " + e.message); }
             }
         };
 
-        window.showHistory = function(memberId) {
+        window.closePraiseModal = () => document.getElementById('praiseModal').classList.remove('active');
+        window.closeDeleteModal = () => document.getElementById('deleteModal').classList.remove('active');
+
+        // AI 분석 기능 (수정 핵심 부분)
+        window.generateAISummary = async function(memberId) {
+            // 🚨 주의: 발급받은 새로운 API Key를 아래 YOUR_NEW_API_KEY_HERE 자리에 넣으세요!
+            const apiKey = "AIzaSyAc08_b-WqMXYKJ7sYOGJkQVvNQTuXiRw4"; 
+            
             const member = members.find(m => m.id === memberId);
             if (!member) return;
 
-            const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
+            let allPraises = [];
+            if (member.grapes) member.grapes.forEach(g => { if (g && g.reason) allPraises.push(g.reason); });
 
-            if (!member.history || member.history.length === 0) {
-                historyList.innerHTML = '<div style="text-align:center; padding: 20px; color:#999;">아직 완성된 기록이 없습니다.</div>';
-            } else {
-                const reversedHistory = [...member.history].reverse();
+            if (allPraises.length < 3) {
+                alert("AI가 분석하기에 칭찬 데이터가 아직 부족해요! (최소 3개 이상)");
+                return;
+            }
+
+            const resultBox = document.getElementById(`ai-result-${memberId}`);
+            resultBox.classList.add('active');
+            resultBox.innerHTML = '<div style="display: flex; align-items: center; justify-content: center;"><span class="ai-loading"></span><span>✨ AI 분석을 실행 중입니다...</span></div>';
+
+            try {
+                const promptText = `동료들의 칭찬 목록: ${JSON.stringify(allPraises)}. 이 데이터를 바탕으로 ${member.name}님의 강점을 키워드 3개, 한 줄 요약, 동료들의 평가 요약 순서로 분석해줘.`;
+
+                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
                 
-                reversedHistory.forEach((record) => {
-                    const roundDiv = document.createElement('div');
-                    roundDiv.className = 'history-round';
-                    
-                    const dateStr = new Date(record.completedAt).toLocaleDateString('ko-KR');
-                    
-                    let html = `<div class="history-title">🏆 ${record.round}회차 완성 (${dateStr})</div>`;
-                    
-                    const validGrapes = record.grapes.filter(g => g && g.reason);
-                    
-                    if (validGrapes.length === 0) {
-                        html += '<div class="history-item">기록된 칭찬이 없습니다.</div>';
-                    } else {
-                        validGrapes.forEach(g => {
-                             html += `
-                                <div class="history-item">
-                                    ${g.reason}
-                                    <div class="history-date">${g.dateString}</div>
-                                </div>
-                             `;
-                        });
-                    }
-                    
-                    roundDiv.innerHTML = html;
-                    historyList.appendChild(roundDiv);
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
                 });
-            }
 
-            document.getElementById('historyModal').classList.add('active');
-        };
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error?.message || "API 호출 실패");
 
-        window.restoreData = function(input) {
-            const file = input.files[0];
-            if(!file) return;
+                const aiText = data.candidates[0].content.parts[0].text;
+                resultBox.innerHTML = aiText.replace(/\n/g, '<br>');
 
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                try {
-                    const parsedData = JSON.parse(e.target.result);
-                    let targetList = [];
-
-                    if (parsedData.data && Array.isArray(parsedData.data)) {
-                        targetList = parsedData.data;
-                    } else if (Array.isArray(parsedData)) {
-                        targetList = parsedData;
-                    } else {
-                        throw new Error("지원하지 않는 데이터 형식입니다.");
-                    }
-
-                    if(confirm(`총 ${targetList.length}명의 데이터를 복원하시겠습니까? (기존 데이터에 추가됩니다)`)) {
-                        let successCount = 0;
-                        for(const item of targetList) {
-                            let sanitizedGrapes = Array(TOTAL_GRAPES).fill(null);
-                            if (Array.isArray(item.grapes)) {
-                                sanitizedGrapes = item.grapes.map(g => {
-                                    if (g && typeof g === 'object' && g.reason && g.reason.trim().length > 0) {
-                                        return g;
-                                    }
-                                    return null;
-                                });
-                            }
-
-                            const memberData = {
-                                name: item.name || "복원된 멤버",
-                                photo: item.photo || null,
-                                grapes: sanitizedGrapes,
-                                completionCount: item.completionCount || 0,
-                                history: item.history || [], 
-                                createdAt: Date.now() + successCount
-                            };
-                            await addDoc(membersCollection, memberData);
-                            successCount++;
-                        }
-                        alert(`${successCount}명의 데이터가 복원되었습니다!`);
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert("파일 형식이 올바르지 않거나 복원 중 오류가 발생했습니다: " + err.message);
-                }
-                input.value = '';
-            };
-            reader.readAsText(file);
-        };
-
-        window.closePraiseModal = function() {
-            document.getElementById('praiseModal').classList.remove('active');
-            currentGrapeData = null;
-        };
-        window.closeDeleteModal = function() {
-            document.getElementById('deleteModal').classList.remove('active');
-            deleteGrapeData = null;
-        };
-        
-        window.closeCelebration = async function() {
-            document.getElementById('celebrationModal').classList.remove('active');
-            
-            for(let i=0; i<3; i++) {
-                setTimeout(createConfetti, i*300);
-            }
-
-            if (currentGrapeData && currentGrapeData.memberId) {
-                const member = members.find(m => m.id === currentGrapeData.memberId);
-                if (member) {
-                    try {
-                        const newCount = (member.completionCount || 0) + 1;
-                        const currentHistory = member.history || [];
-                        
-                        const historyEntry = {
-                            round: newCount,
-                            completedAt: Date.now(),
-                            grapes: member.grapes
-                        };
-                        
-                        await updateDoc(doc(db, "members", member.id), {
-                            completionCount: newCount,
-                            grapes: Array(TOTAL_GRAPES).fill(null),
-                            history: [...currentHistory, historyEntry]
-                        });
-                        
-                    } catch (e) { 
-                        console.error("초기화 실패:", e); 
-                        alert("데이터 업데이트 중 오류가 발생했습니다.");
-                    }
-                }
+            } catch (error) {
+                console.error(error);
+                resultBox.innerHTML = "😢 분석 중 오류가 발생했어요.<br>발급받은 새 API 키가 정상인지 확인해 주세요.";
+                alert("오류 내용: " + error.message);
             }
         };
 
-        function showSaveNotification(message) {
-            const existing = document.getElementById('saveNotification');
-            if (existing) existing.remove();
-            const notification = document.createElement('div');
-            notification.id = 'saveNotification';
-            notification.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg><span>${message}</span></div>`;
-            notification.style.cssText = `position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 16px 32px; border-radius: 12px; box-shadow: 0 10px 40px rgba(16, 185, 129, 0.5); z-index: 100001; font-weight: 600; font-size: 16px; animation: slideInDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), fadeOut 0.3s ease 2.7s forwards;`;
-            document.body.appendChild(notification);
-            setTimeout(() => { if (notification.parentNode) notification.remove(); }, 3000);
-        }
-
+        // 멤버 렌더링
         function renderMembers() {
             const container = document.getElementById('membersContainer');
             container.innerHTML = '';
-            
-            if(members.length === 0) {
-                 container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #6b46c1;">멤버를 추가해주세요! 🍇</div>';
-                 return;
-            }
-
-            let maxScore = -1;
-            const memberScores = members.map(m => {
-                const currentFilled = (m.grapes || []).filter(g => g !== null && g.reason).length;
-                const score = (m.completionCount || 0) * 30 + currentFilled;
-                if(score > maxScore) maxScore = score;
-                return { id: m.id, score: score };
-            });
-            
             members.forEach(member => {
-                const scoreObj = memberScores.find(s => s.id === member.id);
-                const isKing = maxScore > 0 && scoreObj.score === maxScore;
-                const isGoldTier = (member.completionCount || 0) >= 1;
-
                 const card = document.createElement('div');
                 card.className = 'member-card';
-                card.setAttribute('data-member-card-id', member.id);
-                
                 card.innerHTML = `
                     <button class="btn-remove" onclick="removeMember('${member.id}')">×</button>
                     <div class="member-header">
                         <div class="profile-section">
-                            <div class="profile-image-container">
-                                ${isKing ? '<div class="crown-icon">👑</div>' : ''}
-                                
-                                ${member.completionCount > 0 
-                                    ? `<div class="badge-container" onclick="showHistory('${member.id}')" title="누르면 과거 칭찬 내역을 볼 수 있습니다">
-                                         <div class="badge-text">${member.completionCount}회 완성</div>
-                                       </div>` 
-                                    : ''}
-                                
-                                ${member.photo 
-                                    ? `<img src="${member.photo}" class="profile-image" onclick="document.getElementById('upload-${member.id}').click()">` 
-                                    : `<div class="profile-placeholder" onclick="document.getElementById('upload-${member.id}').click()">👤</div>`
-                                }
-                                <input type="file" id="upload-${member.id}" class="profile-upload" accept="image/*" onchange="uploadPhoto('${member.id}', event)">
-                            </div>
                             <input type="text" class="member-name-input" value="${member.name}" onchange="updateMemberName('${member.id}', this.value)">
-                            
-                            <button class="ai-summary-btn" onclick="generateAISummary('${member.id}')">
-                                🤖 AI 분석 보기
-                            </button>
+                            <button class="ai-summary-btn" onclick="generateAISummary('${member.id}')">🤖 AI 분석 보기</button>
                             <div id="ai-result-${member.id}" class="ai-result-box"></div>
-
                         </div>
                     </div>
-                    <div class="grape-board">
-                        <div class="grape-header">
-                            <div class="grape-leaves">
-                                <div class="leaf ${isGoldTier ? 'gold' : ''}"></div>
-                                <div class="leaf ${isGoldTier ? 'gold' : ''}"></div>
-                            </div>
-                            <div class="grape-stem"></div>
-                            <div class="grape-title">칭찬포도</div>
-                        </div>
-                        <div class="grape-cluster">
-                            ${renderGrapeCluster(member)}
-                        </div>
-                    </div>
+                    <div class="grape-board"><div class="grape-cluster">${renderGrapeCluster(member)}</div></div>
                 `;
                 container.appendChild(card);
             });
@@ -735,191 +462,14 @@
                 html += '<div class="grape-row">';
                 for (let i = 0; i < count; i++) {
                     const grape = member.grapes[grapeIndex];
-                    const filled = grape !== null && typeof grape === 'object' && grape.reason && grape.reason.trim() !== '';
-
-                    let displayText = '';
-                    if (filled) {
-                         displayText = `${grape.reason}\n\n📅 ${grape.dateString}`;
-                    }
-                    
-                    html += `<div class="grape ${filled ? 'filled' : ''}" data-member-id="${member.id}" data-grape-index="${grapeIndex}" ${filled ? `data-reason="${displayText.replace(/"/g, '&quot;')}"` : ''} onclick="clickGrape('${member.id}', ${grapeIndex})">${grapeIndex + 1}</div>`;
+                    const filled = grape && grape.reason;
+                    html += `<div class="grape ${filled ? 'filled' : ''}" onclick="clickGrape('${member.id}', ${grapeIndex})" data-reason="${filled ? grape.reason : ''}">${grapeIndex + 1}</div>`;
                     grapeIndex++;
                 }
                 html += '</div>';
             });
             return html;
         }
-
-        window.showCelebration = function(member) {
-            createConfetti();
-            document.getElementById('celebrationTitle').textContent = `🎉 축하합니다! 🎉`;
-            document.getElementById('celebrationMessage').textContent = `${member.name}님의 포도가 완성되었습니다!`;
-            document.getElementById('celebrationModal').classList.add('active');
-        };
-        
-        function createConfetti() {
-            const container = document.getElementById('confettiContainer');
-            const colors = ['#fbbf24', '#f59e0b', '#7c3aed', '#6b46c1', '#ec4899', '#ef4444', '#22c55e'];
-            for (let i = 0; i < 150; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.classList.add('confetti');
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                    container.appendChild(confetti);
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 20);
-            }
-        }
-        
-        window.createQuickConfetti = function(memberId) {
-            const memberCard = document.querySelector(`[data-member-card-id="${memberId}"]`);
-            if (!memberCard) return;
-            const grapeBoard = memberCard.querySelector('.grape-board');
-            if (!grapeBoard) return;
-            const existingContainer = grapeBoard.querySelector('.grape-confetti-container');
-            if (existingContainer) existingContainer.remove();
-            const confettiContainer = document.createElement('div');
-            confettiContainer.className = 'grape-confetti-container';
-            grapeBoard.appendChild(confettiContainer);
-            
-            for(let i=0; i<20; i++) {
-                 const p = document.createElement('div');
-                 p.className = 'grape-confetti';
-                 p.style.width = '8px'; p.style.height='8px'; p.style.background='#fbbf24';
-                 p.style.left = '50%'; p.style.top='50%';
-                 p.style.animation = `grapeConfettiFall 1s ease-out forwards`;
-                 confettiContainer.appendChild(p);
-            }
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && document.getElementById('praiseModal').classList.contains('active')) {
-                savePraise();
-            }
-        });
-
-        function parseAIResult(text) {
-            const lines = text.split('\n');
-            let html = '';
-            let currentSection = '';
-            let sectionContent = '';
-            
-            lines.forEach((line, index) => {
-                const trimmedLine = line.trim();
-                const sectionMatch = trimmedLine.match(/^(\d+)\.\s*(.+)$/);
-                
-                if (sectionMatch) {
-                    if (currentSection) {
-                        html += `<div class="ai-section">
-                                    <div class="ai-section-title">${currentSection}</div>
-                                    <div class="ai-section-content">${sectionContent}</div>
-                                 </div>`;
-                    }
-                    const sectionNum = sectionMatch[1];
-                    const sectionTitle = sectionMatch[2];
-                    currentSection = `${sectionNum}. ${sectionTitle}`;
-                    sectionContent = '';
-                } else if (trimmedLine) {
-                    if (sectionContent) sectionContent += '<br>';
-                    sectionContent += trimmedLine;
-                } else if (!currentSection && trimmedLine) {
-                    html += trimmedLine + '<br>';
-                }
-            });
-            
-            if (currentSection) {
-                html += `<div class="ai-section">
-                            <div class="ai-section-title">${currentSection}</div>
-                            <div class="ai-section-content">${sectionContent}</div>
-                         </div>`;
-            }
-            if (!html) {
-                html = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-            }
-            return html;
-        }
-
-        window.generateAISummary = async function(memberId) {
-            const apiKey = "AIzaSyBPuUSR5VaHV4ZUdrVnxIPELQxltozskeg"; 
-            
-            const member = members.find(m => m.id === memberId);
-            if (!member) return;
-
-            let allPraises = [];
-            if (member.grapes) {
-                member.grapes.forEach(g => { if (g && g.reason) allPraises.push(g.reason); });
-            }
-            if (member.history) {
-                member.history.forEach(round => {
-                    if (round.grapes) {
-                        round.grapes.forEach(g => { if (g && g.reason) allPraises.push(g.reason); });
-                    }
-                });
-            }
-
-            if (allPraises.length < 3) {
-                alert("AI가 분석하기에 칭찬 데이터가 아직 부족해요! (최소 3개 이상)");
-                return;
-            }
-
-            const resultBox = document.getElementById(`ai-result-${memberId}`);
-            resultBox.classList.add('active');
-            resultBox.innerHTML = '<div style="display: flex; align-items: center; justify-content: center;"><span class="ai-loading"></span><span>✨ AI 분석을 실행 중입니다...</span></div>';
-
-            try {
-                const promptText = `
-다음은 '${member.name}' 님이 받은 칭찬 목록입니다:
-${JSON.stringify(allPraises)}
-
-이 데이터를 바탕으로 이 사람의 강점을 분석해주세요.
-반드시 아래 형식을 정확히 지켜서 답변해주세요:
-
-1. 🏆 핵심 키워드 3개
-#키워드1 #키워드2 #키워드3 형식으로 3개만 나열
-
-2. 📝 한 줄 요약
-이 사람의 스타일이나 성격을 한 문장으로 요약
-
-3. ✨ 동료들의 평가 요약
-어떤 점을 주로 칭찬받는지 2~3문장으로 부드럽게 설명
-
-중요: 
-- 반드시 "1.", "2.", "3." 번호로 시작하는 3개 섹션으로 구분
-- 각 섹션은 빈 줄로 구분
-- HTML 태그 사용 금지
-- 따뜻한 어투 사용
-                `;
-
-                const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-                
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: promptText }]
-                        }]
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error?.message || "API 호출 실패");
-                }
-
-                const aiText = data.candidates[0].content.parts[0].text;
-                const formattedHTML = parseAIResult(aiText);
-                resultBox.innerHTML = formattedHTML;
-
-            } catch (error) {
-                console.error(error);
-                resultBox.innerHTML = "😢 분석 중 오류가 발생했어요.<br>잠시 후 다시 시도해주세요.";
-                alert("오류 내용: " + error.message);
-            }
-        };
 
     </script>
 </body>
