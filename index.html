@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍇 비즈옵스 칭찬 포도 보드 (+AI 요약)</title>
+    <title>🍇 우리 가족 칭찬 포도 보드 (+AI 요약)</title>
     <style>
         /* --- 기본 스타일 --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,7 +19,6 @@
         
         .members-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px 20px; max-width: 1600px; margin: 0 auto; position: relative; z-index: 1; }
         
-        /* [수정] 카드 호버 시 다른 카드보다 위로 오도록 z-index 추가 */
         .member-card { background: white; border-radius: 15px; padding: 20px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); position: relative; transition: transform 0.3s ease; overflow: visible; z-index: 1; margin-top: 20px; }
         .member-card:hover { transform: translateY(-5px); z-index: 100; }
         
@@ -59,7 +58,6 @@
             box-shadow: 0 3px 8px rgba(245, 158, 11, 0.25), inset 0 1px 0 rgba(255,255,255,0.5);
         }
 
-        /* 1등 왕관 애니메이션 */
         .crown-icon {
             position: absolute;
             top: -35px;
@@ -87,7 +85,6 @@
         .member-name-input { font-size: 1.1em; font-weight: bold; color: #6b46c1; border: 2px solid #e8deff; border-radius: 8px; padding: 6px 12px; text-align: center; outline: none; transition: all 0.3s ease; width: 100%; max-width: 200px; margin-top: 5px; }
         .member-name-input:focus { border-color: #7c3aed; box-shadow: 0 0 10px rgba(124, 58, 237, 0.2); }
         
-        /* --- AI 요약 관련 스타일 --- */
         .ai-summary-btn {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white; border: none; padding: 6px 16px; border-radius: 20px;
@@ -167,7 +164,6 @@
         
         .grape-cluster { display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 3px; position: relative; z-index: 1; }
 
-        /* [수정] 포도 줄이 호버될 때 z-index를 높여 아래 줄 포도알에 가려지지 않게 함 */
         .grape-row { display: flex; gap: 4px; justify-content: center; position: relative; z-index: 1; }
         .grape-row:hover { z-index: 10; }
         
@@ -175,14 +171,11 @@
         .grape:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(124, 58, 237, 0.5); }
         .grape.filled { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border-color: #7c3aed; }
         
-        /* 툴팁 스타일 */
         .grape.filled:hover::after { content: attr(data-reason); position: absolute; bottom: auto; left: 50%; top: 120%; transform: translateX(-50%); background: white; color: #1f2937; padding: 15px 20px; border-radius: 12px; font-size: 1em; font-weight: 500; z-index: 999999; max-width: 400px; min-width: 150px; white-space: pre-wrap; word-break: break-word; overflow-wrap: break-word; line-height: 1.5; text-align: left; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 0 3px #7c3aed; pointer-events: none; }
         .grape.filled:hover::before { content: ''; position: absolute; bottom: auto; left: 50%; top: calc(120% - 8px); transform: translateX(-50%); border: 8px solid transparent; border-bottom-color: white; z-index: 999999; filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.1)); pointer-events: none; }
         
-        /* [수정] 호버된 포도알 자체가 최상위로 오도록 */
         .grape.filled:hover { z-index: 999998; }
         
-        /* 모달 스타일 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
         .modal-content { background: white; border-radius: 20px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); animation: modalSlideIn 0.3s ease; }
@@ -192,15 +185,16 @@
         .modal-input:focus { border-color: #7c3aed; box-shadow: 0 0 10px rgba(124, 58, 237, 0.2); }
         .modal-buttons { display: flex; gap: 10px; }
         .modal-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 1em; cursor: pointer; transition: all 0.3s ease; }
-        .modal-btn-save { background: linear-gradient(135deg, #7c3aed 0%, #6b46c1 100%); color: white; }
+        .modal-btn-save { background: linear-gradient(135deg, #7c3aed 0%, #6b46c1 100%); color: white; font-weight: bold; }
         .modal-btn-save:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3); }
         .modal-btn-cancel { background: #e5e7eb; color: #4b5563; }
         .modal-btn-cancel:hover { background: #d1d5db; }
-        .modal-btn-delete { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
-        .modal-btn-delete:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); }
+        
+        .modal-btn-sub { background: #f3f4f6; color: #9ca3af; border: 1px solid #e5e7eb; }
+        .modal-btn-sub:hover { background: #e5e7eb; color: #6b7280; }
+
         .modal-text { color: #4b5563; font-size: 1.1em; margin-bottom: 20px; text-align: center; line-height: 1.6; }
         
-        /* 히스토리 모달 스타일 */
         .history-list { max-height: 400px; overflow-y: auto; text-align: left; padding: 0 10px; }
         .history-round { background: #f9fafb; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #e5e7eb; }
         .history-title { font-weight: bold; color: #d97706; margin-bottom: 10px; font-size: 1.1em; border-bottom: 2px solid #fef3c7; padding-bottom: 5px; }
@@ -249,15 +243,15 @@
 </head>
 <body>
     <div class="header">
-        <h1>🍇 비즈옵스 칭찬 포도</h1>
-        <p>우리 팀원의 좋은 일을 칭찬하고 포도를 채워보세요!</p>
+        <h1>🍇 우리 가족 칭찬 포도</h1>
+        <p>우리 가족의 좋은 일을 칭찬하고 포도를 채워보세요!</p>
         <p style="font-size: 0.9em; color: #9333ea; margin-top: 5px;">
             💡 팁: 빈 포도알을 클릭하여 칭찬을 추가하세요! (실시간 자동 저장) ⚡
         </p>
     </div>
 
     <div class="controls">
-        <button class="btn-add-member" onclick="handleAddMember()"><span style="color: white;">➕</span> 팀원 추가</button>
+        <button class="btn-add-member" onclick="handleAddMember()"><span style="color: white;">➕</span> 가족 추가</button>
     </div>
 
     <div class="members-container" id="membersContainer">
@@ -277,11 +271,10 @@
 
     <div class="modal" id="deleteModal">
         <div class="modal-content">
-            <div class="modal-header">🗑️ 칭찬 삭제</div>
-            <div class="modal-text" id="deleteModalText">이 칭찬을 삭제하시겠습니까?</div>
+            <div class="modal-text" id="deleteModalText" style="margin-top: 10px;"></div>
             <div class="modal-buttons">
-                <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">취소</button>
-                <button class="modal-btn modal-btn-delete" onclick="confirmDelete()">삭제</button>
+                <button class="modal-btn modal-btn-save" onclick="closeDeleteModal()">확인</button>
+                <button class="modal-btn modal-btn-sub" onclick="confirmDelete()">삭제</button>
             </div>
         </div>
     </div>
@@ -321,13 +314,13 @@
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         const firebaseConfig = {
-          apiKey: "AIzaSyAuaHkcxL6Zr8xmkTpwFW5dGJtnJ8525Gs",
-          authDomain: "grape-board-7065e.firebaseapp.com",
-          projectId: "grape-board-7065e",
-          storageBucket: "grape-board-7065e.firebasestorage.app",
-          messagingSenderId: "658561934916",
-          appId: "1:658561934916:web:3f81caca7f24cd3ffe3e11",
-          measurementId: "G-590B327N90"
+          apiKey: "AIzaSyAHAl4ZKNB4Jfwz25pP8ydjWEWHhsjTq8c",
+          authDomain: "grape-board-home.firebaseapp.com",
+          projectId: "grape-board-home",
+          storageBucket: "grape-board-home.firebasestorage.app",
+          messagingSenderId: "396317611658",
+          appId: "1:396317611658:web:15ab3bbf071bb6de2fff73",
+          measurementId: "G-MQ8BRLPGB2"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -338,7 +331,7 @@
         
         const GRAPE_PATTERN = [6, 5, 5, 4, 4, 3, 2, 1];
         const TOTAL_GRAPES = 30;
-        const DELETE_PASSWORD = "비즈옵스짱"; 
+        const DELETE_PASSWORD = "우리가족짱"; 
         
         let members = [];
         let currentGrapeData = null;
@@ -360,7 +353,7 @@
 
         window.handleAddMember = async function() {
             const newMember = {
-                name: `팀원 ${members.length + 1}`,
+                name: `가족 ${members.length + 1}`,
                 photo: null,
                 grapes: Array(TOTAL_GRAPES).fill(null),
                 completionCount: 0,
@@ -376,13 +369,13 @@
         };
 
         window.removeMember = async function(id) {
-            const password = prompt("팀원을 삭제하려면 비밀번호를 입력하세요:");
+            const password = prompt("멤버를 삭제하려면 비밀번호를 입력하세요:");
             if (password !== DELETE_PASSWORD) {
                 alert("비밀번호가 일치하지 않습니다.");
                 return;
             }
 
-            if (confirm('정말 이 팀원을 삭제하시겠습니까?')) {
+            if (confirm('정말 이 멤버를 삭제하시겠습니까?')) {
                 try {
                     await deleteDoc(doc(db, "members", id));
                 } catch (e) {
@@ -428,8 +421,8 @@
 
             if (isFilled) {
                 deleteGrapeData = { memberId, grapeIndex };
-                let displayText = `${grape.reason}<br><br>📅 ${grape.dateString}`;
-                document.getElementById('deleteModalText').innerHTML = `<strong>"${displayText}"</strong><br><br>이 칭찬을 삭제하시겠습니까?`;
+                let displayText = `<div style="font-size:1.25em; color:#4b5563; margin-bottom:15px; font-weight:bold; word-break:keep-all;">"${grape.reason}"</div><div style="color:#9ca3af; font-size:0.9em;">📅 ${grape.dateString}</div>`;
+                document.getElementById('deleteModalText').innerHTML = displayText;
                 document.getElementById('deleteModal').classList.add('active');
             } else {
                 currentGrapeData = { memberId, grapeIndex };
@@ -588,7 +581,7 @@
                             }
 
                             const memberData = {
-                                name: item.name || "복원된 팀원",
+                                name: item.name || "복원된 멤버",
                                 photo: item.photo || null,
                                 grapes: sanitizedGrapes,
                                 completionCount: item.completionCount || 0,
@@ -668,7 +661,7 @@
             container.innerHTML = '';
             
             if(members.length === 0) {
-                 container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #6b46c1;">팀원을 추가해주세요! 🍇</div>';
+                 container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #6b46c1;">멤버를 추가해주세요! 🍇</div>';
                  return;
             }
 
@@ -849,7 +842,7 @@
         }
 
         window.generateAISummary = async function(memberId) {
-            const apiKey = "AIzaSyAuaHkcxL6Zr8xmkTpwFW5dGJtnJ8525Gs"; 
+            const apiKey = "AIzaSyA3vkoiUL3U_zF8naJvgR8HIVLPnxHemk4"; 
             
             const member = members.find(m => m.id === memberId);
             if (!member) return;
