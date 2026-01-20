@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍇 비즈옵스 칭찬 포도 보드 (+AI 요약)</title>
+    <title>🍇 우리 가족 칭찬 포도 보드 (+AI 요약)</title>
     <style>
         /* --- 기본 스타일 --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -243,15 +243,15 @@
 </head>
 <body>
     <div class="header">
-        <h1>🍇 비즈옵스 칭찬 포도</h1>
-        <p>우리 팀원의 좋은 일을 칭찬하고 포도를 채워보세요!</p>
+        <h1>🍇 우리 가족 칭찬 포도</h1>
+        <p>우리 가족의 좋은 일을 칭찬하고 포도를 채워보세요!</p>
         <p style="font-size: 0.9em; color: #9333ea; margin-top: 5px;">
             💡 팁: 빈 포도알을 클릭하여 칭찬을 추가하세요! (실시간 자동 저장) ⚡
         </p>
     </div>
 
     <div class="controls">
-        <button class="btn-add-member" onclick="handleAddMember()"><span style="color: white;">➕</span> 팀원 추가</button>
+        <button class="btn-add-member" onclick="handleAddMember()"><span style="color: white;">➕</span> 가족 추가</button>
     </div>
 
     <div class="members-container" id="membersContainer">
@@ -331,7 +331,7 @@
         
         const GRAPE_PATTERN = [6, 5, 5, 4, 4, 3, 2, 1];
         const TOTAL_GRAPES = 30;
-        const DELETE_PASSWORD = "비즈옵스짱"; 
+        const DELETE_PASSWORD = "우리가족짱"; 
         
         let members = [];
         let currentGrapeData = null;
@@ -353,7 +353,7 @@
 
         window.handleAddMember = async function() {
             const newMember = {
-                name: `팀원 ${members.length + 1}`,
+                name: `멤버 ${members.length + 1}`,
                 photo: null,
                 grapes: Array(TOTAL_GRAPES).fill(null),
                 completionCount: 0,
@@ -369,13 +369,13 @@
         };
 
         window.removeMember = async function(id) {
-            const password = prompt("팀원을 삭제하려면 비밀번호를 입력하세요:");
+            const password = prompt("멤버를 삭제하려면 비밀번호를 입력하세요:");
             if (password !== DELETE_PASSWORD) {
                 alert("비밀번호가 일치하지 않습니다.");
                 return;
             }
 
-            if (confirm('정말 이 팀원을 삭제하시겠습니까?')) {
+            if (confirm('정말 이 멤버를 삭제하시겠습니까?')) {
                 try {
                     await deleteDoc(doc(db, "members", id));
                 } catch (e) {
@@ -581,7 +581,7 @@
                             }
 
                             const memberData = {
-                                name: item.name || "복원된 팀원",
+                                name: item.name || "복원된 멤버",
                                 photo: item.photo || null,
                                 grapes: sanitizedGrapes,
                                 completionCount: item.completionCount || 0,
@@ -661,7 +661,7 @@
             container.innerHTML = '';
             
             if(members.length === 0) {
-                 container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #6b46c1;">팀원을 추가해주세요! 🍇</div>';
+                 container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; color: #6b46c1;">멤버를 추가해주세요! 🍇</div>';
                  return;
             }
 
@@ -892,7 +892,7 @@ ${JSON.stringify(allPraises)}
 - 따뜻한 어투 사용
                 `;
 
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(url, {
                     method: "POST",
