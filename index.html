@@ -28,7 +28,6 @@
         .member-header { text-align: center; margin-bottom: 15px; }
         .profile-section { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         
-        /* 프로필 컨테이너 크기 수정: 70px -> 140px */
         .profile-image-container { position: relative; width: 140px; height: 140px; margin: 0 auto; }
         
         /* --- 뱃지 및 트로피 스타일 --- */
@@ -75,11 +74,9 @@
             to { top: -45px; transform: translateX(-50%) rotate(5deg); }
         }
 
-        /* 프로필 이미지 크기 수정: 70px -> 140px */
         .profile-image { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid #7c3aed; cursor: pointer; transition: all 0.3s ease; background: white; }
         .profile-image:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3); }
         
-        /* 프로필 플레이스홀더 크기 수정: 70px -> 140px */
         .profile-placeholder { width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #e8deff 0%, #d8c7ff 100%); display: flex; align-items: center; justify-content: center; font-size: 1.8em; cursor: pointer; border: 3px solid #7c3aed; transition: all 0.3s ease; }
         .profile-placeholder:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(124, 58, 237, 0.3); }
         
@@ -161,12 +158,18 @@
         @keyframes confettiFall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
         .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2500; }
         
+        /* [수정됨] 미니 축포 관련 스타일 추가
+           문제 원인: grapeConfettiFall 애니메이션 정의가 빠져있어서 노란 박스가 사라지지 않았음
+        */
         .grape-confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; overflow: hidden; border-radius: 15px; }
-        .grape-confetti { position: absolute; pointer-events: none; }
-        @keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-        @keyframes slideInDown { from { transform: translateX(-50%) translateY(-100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        .grape-confetti { position: absolute; pointer-events: none; border-radius: 50%; }
         
+        /* [추가됨] 미니 축포 애니메이션 정의: 랜덤 방향으로 퍼지면서 사라짐 */
+        @keyframes grapeConfettiFall { 
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; } 
+        }
+
         @media (max-width: 768px) { .header h1 { font-size: 2em; } .members-container { grid-template-columns: 1fr; } .grape { width: 35px; height: 35px; } }
         
         .backup-controls { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; gap: 10px; }
@@ -404,7 +407,10 @@
                     await updateDoc(doc(db, "members", memberId), { grapes: newGrapes });
                     
                     showSaveNotification('저장되었습니다');
+                    
+                    // [수정됨] 축포 함수 호출
                     setTimeout(() => createQuickConfetti(memberId), 100);
+                    
                     const grapeElement = document.querySelector(`[data-member-id="${memberId}"][data-grape-index="${grapeIndex}"]`);
                     if (grapeElement) {
                         grapeElement.classList.add('sparkle');
@@ -708,6 +714,9 @@
             }
         }
         
+        // [수정됨] 미니 축포 로직 수정
+        // 1. CSS 변수(--tx, --ty)를 사용하여 랜덤한 방향으로 날아가게 수정
+        // 2. 애니메이션이 끝난 후 요소를 삭제하도록 수정
         window.createQuickConfetti = function(memberId) {
             const memberCard = document.querySelector(`[data-member-card-id="${memberId}"]`);
             if (!memberCard) return;
@@ -715,18 +724,46 @@
             if (!grapeBoard) return;
             const existingContainer = grapeBoard.querySelector('.grape-confetti-container');
             if (existingContainer) existingContainer.remove();
+            
             const confettiContainer = document.createElement('div');
             confettiContainer.className = 'grape-confetti-container';
             grapeBoard.appendChild(confettiContainer);
             
-            for(let i=0; i<20; i++) {
+            const colors = ['#fbbf24', '#f59e0b', '#7c3aed', '#ec4899', '#10b981'];
+
+            for(let i=0; i<30; i++) {
                  const p = document.createElement('div');
                  p.className = 'grape-confetti';
-                 p.style.width = '8px'; p.style.height='8px'; p.style.background='#fbbf24';
-                 p.style.left = '50%'; p.style.top='50%';
-                 p.style.animation = `grapeConfettiFall 1s ease-out forwards`;
+                 
+                 // 크기 랜덤
+                 const size = Math.random() * 6 + 4 + 'px';
+                 p.style.width = size; 
+                 p.style.height = size; 
+                 
+                 // 색상 랜덤
+                 p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                 
+                 // 시작 위치 (중앙)
+                 p.style.left = '50%'; 
+                 p.style.top = '50%';
+                 
+                 // 랜덤 방향 설정 (CSS 변수로 전달)
+                 const tx = (Math.random() - 0.5) * 250; // -125px ~ 125px
+                 const ty = (Math.random() - 0.5) * 250; 
+                 p.style.setProperty('--tx', `${tx}px`);
+                 p.style.setProperty('--ty', `${ty}px`);
+                 
+                 // 애니메이션 적용
+                 p.style.animation = `grapeConfettiFall 0.8s ease-out forwards`;
+                 
+                 // 애니메이션 후 삭제
+                 setTimeout(() => { p.remove(); }, 800);
+
                  confettiContainer.appendChild(p);
             }
+            
+            // 컨테이너도 나중에 삭제
+            setTimeout(() => { confettiContainer.remove(); }, 1000);
         }
 
         document.addEventListener('keydown', (e) => {
