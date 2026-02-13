@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍇 우리 가족 칭찬 포도 보드 (+AI 요약)</title>
+    <title>🍇 우리 가족 칭찬 포도 보드</title>
     <style>
         /* --- 기본 스타일 --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -87,68 +87,6 @@
         
         .member-name-input { font-size: 1.1em; font-weight: bold; color: #6b46c1; border: 2px solid #e8deff; border-radius: 8px; padding: 6px 12px; text-align: center; outline: none; transition: all 0.3s ease; width: 100%; max-width: 200px; margin-top: 5px; }
         .member-name-input:focus { border-color: #7c3aed; box-shadow: 0 0 10px rgba(124, 58, 237, 0.2); }
-        
-        .ai-summary-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white; border: none; padding: 6px 16px; border-radius: 20px;
-            font-size: 0.85em; cursor: pointer; margin-top: 8px;
-            display: flex; align-items: center; gap: 6px; margin-left: auto; margin-right: auto;
-            font-weight: bold; box-shadow: 0 2px 5px rgba(16, 185, 129, 0.3);
-            transition: all 0.2s ease;
-        }
-        .ai-summary-btn:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4); }
-
-        .ai-result-box {
-            margin-top: 15px; padding: 20px; background: #f0fdf4;
-            border: 1px solid #86efac; border-radius: 12px;
-            font-size: 0.95em; color: #166534; line-height: 1.9;
-            display: none; 
-            text-align: left;
-            width: 100%;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .ai-result-box.active { display: block; animation: modalSlideIn 0.3s ease; }
-        
-        .ai-section {
-            margin-bottom: 18px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed #86efac;
-        }
-        .ai-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        .ai-section-title {
-            font-weight: 800;
-            font-size: 1.05em;
-            color: #059669;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .ai-section-content {
-            color: #166534;
-            line-height: 1.8;
-            padding-left: 24px;
-        }
-        
-        .ai-loading {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 3px solid #86efac;
-            border-top-color: #059669;
-            border-radius: 50%;
-            animation: aiSpin 0.8s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-        @keyframes aiSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
         
         .grape-board { margin-top: 15px; display: flex; flex-direction: column; align-items: center; position: relative; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 0 0 3px white, 0 0 15px rgba(0, 0, 0, 0.1); overflow: visible; }
         
@@ -705,12 +643,6 @@
                                 <input type="file" id="upload-${member.id}" class="profile-upload" accept="image/*" onchange="uploadPhoto('${member.id}', event)">
                             </div>
                             <input type="text" class="member-name-input" value="${member.name}" onchange="updateMemberName('${member.id}', this.value)">
-                            
-                            <button class="ai-summary-btn" onclick="generateAISummary('${member.id}')">
-                                🤖 AI 분석 보기
-                            </button>
-                            <div id="ai-result-${member.id}" class="ai-result-box"></div>
-
                         </div>
                     </div>
                     <div class="grape-board">
@@ -802,127 +734,6 @@
                 savePraise();
             }
         });
-
-        function parseAIResult(text) {
-            const lines = text.split('\n');
-            let html = '';
-            let currentSection = '';
-            let sectionContent = '';
-            
-            lines.forEach((line, index) => {
-                const trimmedLine = line.trim();
-                const sectionMatch = trimmedLine.match(/^(\d+)\.\s*(.+)$/);
-                
-                if (sectionMatch) {
-                    if (currentSection) {
-                        html += `<div class="ai-section">
-                                    <div class="ai-section-title">${currentSection}</div>
-                                    <div class="ai-section-content">${sectionContent}</div>
-                                 </div>`;
-                    }
-                    const sectionNum = sectionMatch[1];
-                    const sectionTitle = sectionMatch[2];
-                    currentSection = `${sectionNum}. ${sectionTitle}`;
-                    sectionContent = '';
-                } else if (trimmedLine) {
-                    if (sectionContent) sectionContent += '<br>';
-                    sectionContent += trimmedLine;
-                } else if (!currentSection && trimmedLine) {
-                    html += trimmedLine + '<br>';
-                }
-            });
-            
-            if (currentSection) {
-                html += `<div class="ai-section">
-                            <div class="ai-section-title">${currentSection}</div>
-                            <div class="ai-section-content">${sectionContent}</div>
-                         </div>`;
-            }
-            if (!html) {
-                html = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-            }
-            return html;
-        }
-
-        window.generateAISummary = async function(memberId) {
-            const apiKey = "AIzaSyAc08_b-WqMXYKJ7sYOGJkQVvNQTuXiRw4"; 
-            
-            const member = members.find(m => m.id === memberId);
-            if (!member) return;
-
-            let allPraises = [];
-            if (member.grapes) {
-                member.grapes.forEach(g => { if (g && g.reason) allPraises.push(g.reason); });
-            }
-            if (member.history) {
-                member.history.forEach(round => {
-                    if (round.grapes) {
-                        round.grapes.forEach(g => { if (g && g.reason) allPraises.push(g.reason); });
-                    }
-                });
-            }
-
-            if (allPraises.length < 3) {
-                alert("AI가 분석하기에 칭찬 데이터가 아직 부족해요! (최소 3개 이상)");
-                return;
-            }
-
-            const resultBox = document.getElementById(`ai-result-${memberId}`);
-            resultBox.classList.add('active');
-            resultBox.innerHTML = '<div style="display: flex; align-items: center; justify-content: center;"><span class="ai-loading"></span><span>✨ AI 분석을 실행 중입니다...</span></div>';
-
-            try {
-                const promptText = `
-다음은 '${member.name}' 님이 동료들에게 받은 칭찬 목록입니다:
-${JSON.stringify(allPraises)}
-
-이 데이터를 바탕으로 이 사람의 강점을 분석해주세요.
-반드시 아래 형식을 정확히 지켜서 답변해주세요:
-
-1. 🏆 핵심 키워드 3개
-#키워드1 #키워드2 #키워드3 형식으로 3개만 나열
-
-2. 📝 한 줄 요약
-이 사람의 업무 스타일이나 성격을 한 문장으로 요약
-
-3. ✨ 동료들의 평가 요약
-어떤 점을 주로 칭찬받는지 2~3문장으로 부드럽게 설명
-
-중요: 
-- 반드시 "1.", "2.", "3." 번호로 시작하는 3개 섹션으로 구분
-- 각 섹션은 빈 줄로 구분
-- HTML 태그 사용 금지
-- 따뜻한 어투 사용
-                `;
-
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-                
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: promptText }]
-                        }]
-                    })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error?.message || "API 호출 실패");
-                }
-
-                const aiText = data.candidates[0].content.parts[0].text;
-                const formattedHTML = parseAIResult(aiText);
-                resultBox.innerHTML = formattedHTML;
-
-            } catch (error) {
-                console.error(error);
-                resultBox.innerHTML = "😢 분석 중 오류가 발생했어요.<br>잠시 후 다시 시도해주세요.";
-                alert("오류 내용: " + error.message);
-            }
-        };
 
     </script>
 </body>
